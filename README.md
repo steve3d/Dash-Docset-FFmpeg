@@ -25,8 +25,8 @@ brew install doxygen php texi2html
 `which` is the api you want to build only `ffmpeg` and `libav` are valid option.
 `version` is the target ffmpeg/libav version.
 For example:
-`./build-docset.sh ffmpeg 3.0.3` to build ffmpeg 3.0.3 api document
-`./build-docset.sh libav 10.7` to build libav 10.7 api document
+- `./build-docset.sh ffmpeg 3.0.3` to build ffmpeg 3.0.3 api document
+- `./build-docset.sh libav 10.7` to build libav 10.7 api document
 
 This will downloads the ffmpeg source tarball, generates the ffmpeg documentation, creates the docset
 and indexes all documenation files.
@@ -34,7 +34,3 @@ and indexes all documenation files.
 ## Credits
 
 Thanks for [Klaus Badelt](https://github.com/klausbadelt/ffmpeg-docset) for the original idea.
-
-## TODO
-
-1. Add tests
