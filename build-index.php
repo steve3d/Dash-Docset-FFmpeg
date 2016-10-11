@@ -85,38 +85,3 @@ while($row = $result->fetchArray(SQLITE3_ASSOC)) {
     }
 }
 $sqlite->close();
-
-return;
-
-
-// change the docset versions if needed
-$docsets = json_decode(file_get_contents('docset.json'));
-$versions = [];
-
-foreach ($docsets->specific_versions as $version)
-    $versions[$version->version] = $version;
-
-if(!isset($versions[$argv[2]])) {
-    $version = new stdClass();
-    $version->version = $argv[2];
-    $version->archive = "versions/{$argv[2]}/FFmpeg.tgz";
-    $versions[$argv[2]] = $version;
-}
-
-krsort($versions, SORT_STRING | SORT_NATURAL);
-$docsets->specific_versions = [];
-$major_versions = [];
-foreach ($versions as $version) {
-    $ver = substr($version->version, 0, strrpos($version->version, '.'));
-    if(!isset($major_versions[$ver])) {
-        $docsets->specific_versions[] = $version;
-        $major_versions[$ver] = true;
-    } else {
-        print "removing old version {$version->version}\n";
-        @unlink($version->archive);
-        @rmdir(dirname($version->archive));
-    }
-}
-
-$docsets->version = array_keys($versions)[0];
-file_put_contents('docset.json', json_encode($docsets, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
