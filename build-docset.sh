@@ -66,6 +66,7 @@ function prepare {
   $SED -e 's/^\(DISABLE_INDEX[ ]*=\).*$/\1 YES/' build/$SRC/doc/Doxyfile
   $SED -e 's/^\(SEARCHENGINE[ ]*=\).*$/\1 NO/' build/$SRC/doc/Doxyfile
   $SED -e 's/^\(GENERATE_TREEVIEW[ ]*=\).*$/\1 NO/' build/$SRC/doc/Doxyfile
+  $SED -e 's/^\(EXCLUDE_SYMBOLS[ ]*\).*$/\1 = AssContext AvsContext CafContext Cell CuvidContext JpeglsContext NuvContext ResampleContext RiceContext segment SoftFloat WebpContext UtVideoContext AACPsyContext /' build/$SRC/doc/Doxyfile
 }
 
 function build {
@@ -111,5 +112,4 @@ VERSION=$2
 prepare $NAME $VERSION
 build "build/$SRC" $VERSION
 package $NAME $VERSION
-php test-docset.php $NAME $VERSION
 
