@@ -39,7 +39,9 @@ while($reader->read()) {
             continue;
 
         $name = (string)$xml->TokenIdentifier->Name;
-        $path = "api/{$xml->Path}#{$xml->Anchor}";
+        $path = "api/{$xml->Path}";
+        if($xml->Anchor != '')
+            $path .= "#{$xml->Anchor}";
 
         $stmt->bindValue(':name', $name, SQLITE3_TEXT);
         $stmt->bindValue(':type', $types[$type], SQLITE3_TEXT);
