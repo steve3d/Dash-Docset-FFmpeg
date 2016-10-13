@@ -76,14 +76,4 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
 }
 
 $stmt->close();
-
-// clean up the index for missing pages
-$result = $sqlite->query('select * from searchIndex');
-while($row = $result->fetchArray(SQLITE3_ASSOC)) {
-    $path = "{$argv[1]}/Contents/Resources/Documents/{$row['path']}";
-    $path = explode('#', $path)[0];
-    if(!file_exists($path)) {
-        echo "{$path} missing.\n";
-    }
-}
 $sqlite->close();
