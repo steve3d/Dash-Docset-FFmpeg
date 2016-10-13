@@ -67,10 +67,8 @@ $json->author->link = "https://github.com/steve3d/Dash-Docset-FFmpeg";
 file_put_contents("{$dash}/{$name}/docset.json", json_encode($json, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 $readme = file_get_contents('README-docset.md');
 file_put_contents("{$dash}/{$name}/README.md", str_replace(':NAME:', $name, $readme));
-
-chdir("{$dash}/{$name}/");
-system("ln -sf versions/{$json->version}/{$name}.tgz .");
-@unlink("{$name}.tgz.txt");
+@unlink("{$dash}/{$name}/$name.tgz");
+copy("{$dash}/{$name}/versions/{$json->version}/{$name}.tgz", "{$dash}/{$name}/$name.tgz");
 
 echo "{$name}.docset {$argv[2]} are published.\n";
 
