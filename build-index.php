@@ -73,6 +73,8 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
     }
 
     file_put_contents($guide, str_replace($search, $replace, $content));
+    $guide = basename($guide);
+    print("Processed Guide {$guide} .\n");
 }
 
 $stmt->close();
