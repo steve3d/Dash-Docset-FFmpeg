@@ -16,7 +16,7 @@ fi
 function usage {
   echo -e "FFmpeg/Libav Dash Document Generator\n"
   echo -e "Usage:\n\t $0 ffmpeg|libav version\n"
-  echo -e "Example, build ffmpeg 3.0.2 docset:\n \t $0 ffmpeg 3.0.2\n"
+  echo -e "Example: To build ffmpeg 3.0.2 docset:\n \t $0 ffmpeg 3.0.2\n"
 }
 
 function prepare {
@@ -87,6 +87,7 @@ function build {
 }
 
 function package {
+  echo "Packaging docset..."
   cd $ROOT
   if [ ! -d $1/$2 ]; then
       mkdir -p $1/$2

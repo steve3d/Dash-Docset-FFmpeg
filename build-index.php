@@ -79,6 +79,10 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
     $guide = basename($guide);
     
 }
-
 $stmt->close();
+
+$result = $sqlite->query('select count(*) as count, type from searchIndex group by type');
+while($row = $result->fetchArray(SQLITE3_ASSOC))
+    print("There are {$row['count']} entries in {$row['type']}.\n");
+
 $sqlite->close();
