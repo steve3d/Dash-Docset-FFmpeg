@@ -26,6 +26,14 @@ function testDocset($folder, $name, $pwd) {
 	if(count($missingId) == 0)
 		echo "Docset: {$folder} passed test.\n";
 
+	$guides = 0;
+	$result = $sqlite->query('select * from searchIndex where type="Guide"');
+	while($row = $result->fetchArray(SQLITE3_ASSOC))
+		$guides ++;
+
+	if($guides == 0)
+		print("There is no guides included.\n");
+
 	$sqlite->close();
 	chdir($cwd);
 	@system("rm -rf {$name}.docset");
