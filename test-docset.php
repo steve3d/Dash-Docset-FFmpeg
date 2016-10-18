@@ -24,15 +24,12 @@ function testDocset($folder, $name, $pwd) {
 	}
 
 	if(count($missingId) == 0)
-		echo "Docset: {$folder} passed test.\n";
+		echo "Docset: {$folder} passed test:\n";
 
 	$guides = 0;
-	$result = $sqlite->query('select * from searchIndex where type="Guide"');
+	$result = $sqlite->query('select count(*) as count, type from searchIndex group by type');
 	while($row = $result->fetchArray(SQLITE3_ASSOC))
-		$guides ++;
-
-	if($guides == 0)
-		print("There is no guides included.\n");
+		print("There are {$row['count']} entries in {$row['type']}.\n");
 
 	$sqlite->close();
 	chdir($cwd);
