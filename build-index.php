@@ -57,24 +57,27 @@ while($reader->read()) {
 // parse the guide and add sections
 foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
     $content = file_get_contents($guide);
-    if(preg_match('|<h1 class="titlefont">(.*)</h1>|', $content, $match) && count($match) == 2) {
+    if(preg_match('|<h1 class="settitle">(.*)</h1>|', $content, $match) && count($match) == 2) {
+        $guideFile = basename($guide);
         $stmt->bindValue(':name', $match[1], SQLITE3_TEXT);
         $stmt->bindValue(':type', 'Guide', SQLITE3_TEXT);
-        $stmt->bindValue(':path', basename($guide), SQLITE3_TEXT);
+        $stmt->bindValue(':path', $guideFile, SQLITE3_TEXT);
         $stmt->execute();
+        print("Processed Guide {$match[1]} => {$guideFile}.\n");
     }
 
-    preg_match_all('|<a.*#toc.*>(.*)</a>|', $content, $match);
+    preg_match_all('|<a.*#toc-.*>(.*)</a>|', $content, $match);
     $search = [];
     $replace = [];
     foreach ($match[0] as $index => $subject) {
         $search[] = $subject;
-        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . $match[1][$index] . '"></a>' . $subject;
+        $name = strip_tags($match[1][$index]);
+        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . $name . '"></a>' . $subject;
     }
 
     file_put_contents($guide, str_replace($search, $replace, $content));
     $guide = basename($guide);
-    print("Processed Guide {$guide} .\n");
+    
 }
 
 $stmt->close();

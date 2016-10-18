@@ -11,11 +11,7 @@ Requires `doxygen`, `php-cli 5.4+` with `xml`/`sqlite3` module, and `texi2html`
 ```
 sudo apt-get install texi2html doxygen php-cli php-xml php-sqlite3
 ```
-### Install requirements on macOS with [Homebrew](http://brew.sh)
-```
-brew tap homebrew/php
-brew install doxygen php texi2html
-```
+
 
 ## Build FFmpeg Docset
 
