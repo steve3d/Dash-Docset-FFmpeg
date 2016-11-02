@@ -78,7 +78,7 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
     foreach ($match[0] as $index => $subject) {
         $search[] = $subject;
         $name = str_replace($name_replace, '', $match[1][$index]);
-        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . urlencode($name) . '"></a>' . $subject;
+        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . rawurlencode(html_entity_decode($name, ENT_HTML5, 'UTF-8')) . '"></a>' . $subject;
     }
 
     file_put_contents($guide, str_replace($search, $replace, $content));
