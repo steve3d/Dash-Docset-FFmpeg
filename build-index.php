@@ -74,11 +74,11 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
     preg_match_all('|<a.*#toc-.*">(.*)</a>|', $content, $match);
     $search = [];
     $replace = [];
-    $name_replace = [['<code>', '</code>', '/'], ['', '', '|']];
+    $name_replace = ['<code>', '</code>'];
     foreach ($match[0] as $index => $subject) {
         $search[] = $subject;
-        $name = str_replace($name_replace[0], $name_replace[1], $match[1][$index]);
-        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . $name . '"></a>' . $subject;
+        $name = str_replace($name_replace, '', $match[1][$index]);
+        $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . urlencode($name) . '"></a>' . $subject;
     }
 
     file_put_contents($guide, str_replace($search, $replace, $content));
