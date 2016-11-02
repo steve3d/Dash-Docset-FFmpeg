@@ -55,9 +55,14 @@ while($reader->read()) {
 
 
 // parse the guide and add sections
+$skip_guides = ['ffmpeg.html', 'ffplay.html', 'ffprobe.html', 'ffserver.html'];
 foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
+    if(array_search(basename($guide), $skip_guides) !== false)
+        continue;
+    
     $content = file_get_contents($guide);
-    if(preg_match('|<h1 class="settitle">(.*)</h1>|', $content, $match) && count($match) == 2) {
+    $pattern = PHP_OS == 'Darwin' ? '|<h1 class="titlefont">(.*)</h1>|' : '|<h1 class="settitle">(.*)</h1>|';
+    if(preg_match($pattern, $content, $match) && count($match) == 2) {
         $guideFile = basename($guide);
         $stmt->bindValue(':name', $match[1], SQLITE3_TEXT);
         $stmt->bindValue(':type', 'Guide', SQLITE3_TEXT);
@@ -66,12 +71,13 @@ foreach (glob("{$argv[1]}/Contents/Resources/Documents/*.html") as $guide) {
         print("Processed Guide {$match[1]} => {$guideFile}.\n");
     }
 
-    preg_match_all('|<a.*#toc-.*>(.*)</a>|', $content, $match);
+    preg_match_all('|<a.*#toc-.*">(.*)</a>|', $content, $match);
     $search = [];
     $replace = [];
+    $name_replace = [['<code>', '</code>', '/'], ['', '', '|']];
     foreach ($match[0] as $index => $subject) {
         $search[] = $subject;
-        $name = strip_tags($match[1][$index]);
+        $name = str_replace($name_replace[0], $name_replace[1], $match[1][$index]);
         $replace[] = '<a class="dashAnchor" name="//apple_ref/Section/' . $name . '"></a>' . $subject;
     }
 
