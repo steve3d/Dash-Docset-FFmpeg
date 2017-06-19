@@ -9,7 +9,7 @@ It is submitted also as a [User Contributed docset](https://github.com/Kapeli/Da
 Requires `doxygen`, `php-cli 5.4+` with `xml`/`sqlite3` module, and `texi2html`
 ### Install requirements on Ubuntu:
 ```
-sudo apt-get install texi2html doxygen php-cli php-xml php-sqlite3
+sudo apt-get install texi2html doxygen php-cli php-xml php-sqlite3 libsdl1.2-dev libsdl2-dev
 ```
 
 
