@@ -25,6 +25,7 @@ $count = 0;
 $types = ['macro' => 'Macro', 'func' => 'Function', 'tdef' => 'Type', 'econst'=>'Enum', 'cl' => 'Struct', 'instm'=>'Method'];
 $folder = "{$argv[1]}/Contents/Resources/Documents/api/";
 $alltypes = [];
+$lowerFileMaps = [];
 
 while($reader->read()) {
     if($reader->name == "Token") {
@@ -35,17 +36,36 @@ while($reader->read()) {
 
         $type = (string)$xml->TokenIdentifier->Type;
         $alltypes[$type] = 1;
-        if(!isset($types[$type]) || !file_exists("${folder}{$xml->Path}"))
-            continue;
+        if(!isset($types[$type])){
+	    continue;
+	}
+
+	if(!file_exists("${folder}{$xml->Path}")) {
+	    print "${folder}{$xml->Path} Not found\n";
+	    continue;
+	}
+
 
         $name = (string)$xml->TokenIdentifier->Name;
-        $path = "api/{$xml->Path}";
+       	$path = "api/{$xml->Path}";
+	$lpath = strtolower($path);
+	if(isset($lowerFileMaps[$lpath])) {
+		if($lowerFileMaps[$lpath] != $path) {
+			$newPath = str_replace('.html', '-'.uniqid().'.html', $xml->Path);
+			print "Case conflict, renaming {$xml->Path} to {$newPath}\n";
+			rename("${folder}{$xml->Path}", "${folder}{$newPath}");
+			$path = "api/{$newPath}";
+		}
+	}
+	else
+		$lowerFileMaps[$lpath] = $path;
+
         if($xml->Anchor != '')
             $path .= "#{$xml->Anchor}";
 
         $stmt->bindValue(':name', $name, SQLITE3_TEXT);
         $stmt->bindValue(':type', $types[$type], SQLITE3_TEXT);
-        $stmt->bindValue(':path', $path, SQLITE3_TEXT);
+	$stmt->bindValue(':path', $path, SQLITE3_TEXT);
         $stmt->execute();
 
         if($count++ > 0 && $count % 1000 == 0)
