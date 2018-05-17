@@ -2,3 +2,5 @@ build
 ffmpeg
 libav
 .DS_Store
+.vscode
+libs/__pycache__

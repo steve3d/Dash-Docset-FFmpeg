@@ -2,7 +2,6 @@ import os, os.path as path
 import sqlite3, uuid, glob, platform, re
 from urllib.parse import quote
 import xml.etree.ElementTree as ET
-from bs4 import BeautifulSoup
 import random, string
 
 class Indexer:
@@ -79,7 +78,7 @@ class Indexer:
         for guide in glob.glob(path.join(self.docSet, 'Contents/Resources/Documents/*.html')):
             with open(guide, 'r') as guideFile:
                 content = guideFile.read()
-            titleRegex = re.compile('<h1 class="(titlefont|settitle)">(.*)</h1')
+            titleRegex = re.compile(r'<h1 class="(titlefont|settitle)">(.*)</h1')
             match = titleRegex.findall(content)
             print('Processing Guide {}'.format(match[0][1]))
 
@@ -87,7 +86,7 @@ class Indexer:
                 self.cursor.execute('INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?, ?, ?)', 
                     (match[0][1], 'Guide', path.basename(guide)))
 
-            sectionRegex = re.compile('(<h\d class="\w*"><a href=".*">(.*)</a></h\d>)')
+            sectionRegex = re.compile(r'(<h\d class="\w*"><a href=".*">(.*)</a></h\d>)')
 
             for sectionMatch in sectionRegex.findall(content):
                 s = sectionMatch[0]
