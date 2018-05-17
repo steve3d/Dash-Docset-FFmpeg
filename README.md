@@ -6,10 +6,10 @@ It is submitted also as a [User Contributed docset](https://github.com/Kapeli/Da
 
 ## Install
 
-Requires `doxygen`, `php-cli 5.4+` with `xml`/`sqlite3` module, and `texi2html`
+Requires `doxygen`, `texi2html`, `Python 3.6.x`
 ### Install requirements on Ubuntu:
 ```
-sudo apt-get install texi2html doxygen php-cli php-xml php-sqlite3 libsdl1.2-dev libsdl2-dev
+sudo apt-get install texi2html doxygen libsdl1.2-dev libsdl2-dev
 ```
 
 
@@ -21,11 +21,13 @@ sudo apt-get install texi2html doxygen php-cli php-xml php-sqlite3 libsdl1.2-dev
 `which` is the api you want to build only `ffmpeg` and `libav` are valid option.
 `version` is the target ffmpeg/libav version.
 For example:
-- `./build-docset.sh ffmpeg 3.0.3` to build ffmpeg 3.0.3 api document
-- `./build-docset.sh libav 10.7` to build libav 10.7 api document
+- `./docset.py build ffmpeg 3.0.3` to build ffmpeg 3.0.3 api document
+- `./docset.py build libav 10.7` to build libav 10.7 api document
 
 This will downloads the ffmpeg source tarball, generates the ffmpeg documentation, creates the docset
 and indexes all documenation files.
+
+*NOTE:* Building the api document on a case-insensitive filesystem is useless, because both ffmpeg and libav have muliple same symbols with different cases, so on a case-insensitive filesystem you will only get the last generated document for those symbols.
 
 ## Credits
 
