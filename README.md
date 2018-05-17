@@ -1,6 +1,6 @@
 # FFmpeg/Libav Docset Generator
 
-This script creates a API docset for FFmpeg/Libav from its documenation.
+This script creates a API docset for FFmpeg/Libav from its documentation.
 The docset can be used in the incredibly useful [Dash](https://kapeli.com/dash).
 It is submitted also as a [User Contributed docset](https://github.com/Kapeli/Dash-User-Contributions) for Dash.
 
@@ -16,7 +16,7 @@ sudo apt-get install texi2html doxygen libsdl1.2-dev libsdl2-dev
 ## Build FFmpeg Docset
 
 ```
-./build-docset.sh which version
+./docset.py build which version
 ```
 `which` is the api you want to build only `ffmpeg` and `libav` are valid option.
 `version` is the target ffmpeg/libav version.
@@ -25,9 +25,9 @@ For example:
 - `./docset.py build libav 10.7` to build libav 10.7 api document
 
 This will downloads the ffmpeg source tarball, generates the ffmpeg documentation, creates the docset
-and indexes all documenation files.
+and indexes all documentation files.
 
-*NOTE:* Building the api document on a case-insensitive filesystem is useless, because both ffmpeg and libav have muliple same symbols with different cases, so on a case-insensitive filesystem you will only get the last generated document for those symbols.
+*NOTE:* Building the api document on a case-insensitive filesystem is useless, because both ffmpeg and libav have multiple same symbols with different cases, so on a case-insensitive filesystem you will only get the last generated document for those symbols.
 
 ## Credits
 
