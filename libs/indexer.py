@@ -1,19 +1,16 @@
 import os, os.path as path
 import sqlite3, uuid, glob, platform, re
 from urllib.parse import quote
-import xml.etree.ElementTree as ET
-import random, string
+import random, string, sys
+import xml.etree.cElementTree as ET
+from .utils import getDocsetName
 
 class Indexer:
     def __init__(self, lib, version):
         self.cwd = os.getcwd()
-
-        if lib == 'ffmpeg':
-            self.target = 'FFmpeg'
-        elif lib == 'libav':
-            self.target = 'Libav'
-
+        self.target = getDocsetName(lib)
         self.docSet = path.join(self.cwd, 'build/{}-{}/{}.docset'.format(lib, version, self.target))
+        self.srcRoot = path.join(self.cwd, 'build/{}-{}'.format(lib, version))
         self.typeDict = {'macro': 'Macro', 'func': 'Function', 'tdef': 'Type', 'econst' :'Enum', 'cl': 'Struct', 'instm' :'Method'}
 
     def createDatabase(self):
@@ -99,20 +96,13 @@ class Indexer:
 
         self.connection.commit()
 
-    def testFilesystem(self):
-        tempFile = ''.join(random.choices(string.ascii_uppercase, k=8))
-        fullPath = path.join(self.cwd, tempFile)
-        f = open(fullPath, 'w')
-        f.close()
-        exists = path.isfile(path.join(self.cwd, tempFile.lower()))
-        os.unlink(fullPath)
-        
-        if exists == True:
-            raise Exception('Building FFmpeg/Libav on a case-insensitive is useless.')
+    def createArchive(self):
+        os.chdir(self.srcRoot)
+        print('Creating archive {0}.tgz for {0}.docset'.format(self.target))
+        os.spawnlp(os.P_WAIT, 'tar', 'tar', 'zcf', self.target + '.tgz', self.target + '.docset')
 
 
     def build(self):
-        self.testFilesystem()
         self.createDatabase()
         self.buildApi()
         self.buildGuides()

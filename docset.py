@@ -1,45 +1,58 @@
 #!/usr/bin/env python3
 
 import sys, os.path as path
-import libs.build, libs.indexer
+from libs import *
+from libs.utils import checkEnv, checkFilesystem
 
 def build(lib, version):
-    build = libs.build.Builder('ffmpeg', '4.0')
-    if build.checkEnv() == False:
-        print('Please install corresponding programs.')
-        exit(-1)
-        
+    build = Builder(lib, version)        
     build.build()
-    indexer = libs.indexer.Indexer('ffmpeg', '4.0')
+    indexer = Indexer(lib, version)
     indexer.build()
 
 def publish(lib, version, dest):
+    pub = Publisher(lib, version)
+    pub.publish(dest)
     pass
 
-def printBuildUsage():
-    name = path.basename(sys.argv[0])
-    print('\t{} build ffmpeg|libav version'.format(name))
+def printHelp():
+    print('Usage:')
+    printBuildUsage()
+    printPublishUsage()
+    exit(-1)
 
-def printPublishUsage():
-    name = path.basename(sys.argv[0])
-    print('\t{} publish ffmpeg|libav version dest'.format(name))
+def getScriptName():
+    return path.basename(sys.argv[0])
+
+def printBuildUsage(header = False):
+    if header:
+        print('Usage for building:')
+    print('\t{} build ffmpeg|libav version'.format(getScriptName()))
+
+def printPublishUsage(header = False):
+    if header:
+        print('Usage for publish docset:')
+    print('\t{} publish ffmpeg|libav version dest'.format(getScriptName()))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('Usage:')
-        printBuildUsage()
-        printPublishUsage()
+        printHelp()
+
+    checkFilesystem()
+    if checkEnv() == False:
+        print('Please install the missing program.')
         exit(-1)
-    elif sys.argv[1] == 'build':
+    
+    if sys.argv[1] == 'build':
         if len(sys.argv) != 4:
-            print('Usage for building:')
-            printBuildUsage()
-            exit(-1)
-        build(sys.argv[2], sys.argv[3])
+            printBuildUsage(True)
+        else:
+            build(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == 'publish':
         if len(sys.argv) != 5:
-            print('Usage for publish docset:')
-            printPublishUsage()
-            exit(-1)
-        publish(sys.argv[2], sys.argv[3], sys.argv[4])
+            printPublishUsage(True)
+        else:
+            publish(sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        printHelp()
 

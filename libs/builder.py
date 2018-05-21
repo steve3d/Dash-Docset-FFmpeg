@@ -6,6 +6,7 @@ import platform
 import shutil
 import glob
 import sqlite3
+from .utils import getDocsetName
 
 
 class Builder:
@@ -16,32 +17,16 @@ class Builder:
         self.buildDir = path.join(self.cwd, 'build')
         self.sourceFile = path.join(self.buildDir, '{}-{}.tar.xz'.format(lib, version))
         self.sourceDir = path.join(self.buildDir, '{}-{}'.format(lib, version))
+        self.identifier = getDocsetName(lib)
 
         if lib == 'ffmpeg':
             self.target = 'doc'
-            self.identifier = 'FFmpeg'
         elif lib == 'libav':
             self.target = 'documentation'
-            self.identifier = 'Libav'
         else:
             raise Exception('Unknown target {}'.format(lib))
 
         self.docset = '{}.docset'.format(self.identifier)
-
-    def checkEnv(self):
-        if shutil.which('doxygen') == None:
-            print('I need doxygen to create the docset')
-            return False
-
-        if shutil.which('texi2html') == None:
-            print('I need texi2html to create the docset')
-            return False
-        
-        if shutil.which('sed') == None:
-            print('I need seed to create the docset')
-            return False
-
-        return True
 
     def download(self):
         if path.isdir(self.buildDir) == False:
