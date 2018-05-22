@@ -86,8 +86,7 @@ class Builder:
     def build(self):
         self.prepare()
         os.chdir(self.sourceDir)
-        return
-
+        
         os.spawnlp(os.P_WAIT, './configure', './configure', '--disable-yasm')
         os.spawnlp(os.P_WAIT, 'make', 'make', 'clean', self.target)
         shutil.rmtree('doc/doxy/html', ignore_errors=True)
