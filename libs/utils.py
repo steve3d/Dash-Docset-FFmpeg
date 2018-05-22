@@ -16,11 +16,9 @@ def checkFilesystem():
     f.close()
     exists = path.isfile(path.join(os.getcwd(), tempFile.lower()))
     os.unlink(fullPath)
-
-    return
     
     if exists == True:
-        raise Exception('Building FFmpeg/Libav on a case-insensitive is useless.')
+        print('Building FFmpeg/Libav on a case-insensitive is useless.')
 
 def checkEnv():
     if shutil.which('doxygen') == None:
