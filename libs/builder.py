@@ -1,11 +1,6 @@
-import os
+import os, re, shutil, glob, sqlite3
 import os.path as path
 import urllib.request
-import re
-import platform
-import shutil
-import glob
-import sqlite3
 from .utils import getDocsetName
 
 
@@ -58,16 +53,17 @@ class Builder:
             print('Unpacking source file')
             os.spawnlp(os.P_WAIT, 'tar', 'tar', 'Jxf', self.sourceFile)
 
-        if platform.system() == 'Darwin':
-            inplace = '-i.bak'
-        else:
-            inplace = '-i',
-
         doxyfile = path.join(self.sourceDir, 'doc/Doxyfile')
-        os.spawnlp(os.P_WAIT, 'sed', 'sed', inplace, '-e', r's/^\(GENERATE_DOCSET[ ]*=\).*$/\1 YES/', doxyfile)
-        os.spawnlp(os.P_WAIT, 'sed', 'sed', inplace, '-e', r's/^\(DISABLE_INDEX[ ]*=\).*$/\1 YES/', doxyfile)
-        os.spawnlp(os.P_WAIT, 'sed', 'sed', inplace, '-e', r's/^\(SEARCHENGINE[ ]*=\).*$/\1 NO/', doxyfile)
-        os.spawnlp(os.P_WAIT, 'sed', 'sed', inplace, '-e', r's/^\(GENERATE_TREEVIEW[ ]*=\).*$/\1 NO/', doxyfile)
+        with open(doxyfile) as f:
+            contents = f.readlines()
+        
+        with open(doxyfile, 'w') as f:
+            for line in contents:
+                line = re.sub(r'^(GENERATE_DOCSET[ ]*=).*$', r'\1 YES', line)
+                line = re.sub(r'^(DISABLE_INDEX[ ]*=).*$', r'\1 YES', line)
+                line = re.sub(r'^(SEARCHENGINE[ ]*=).*$', r'\1 NO', line)
+                line = re.sub(r'^(GENERATE_TREEVIEW[ ]*=).*$', r'\1 NO', line)
+                f.write(line)
 
     def copyDocset(self):
         os.chdir(self.sourceDir)
@@ -90,6 +86,7 @@ class Builder:
     def build(self):
         self.prepare()
         os.chdir(self.sourceDir)
+        return
 
         os.spawnlp(os.P_WAIT, './configure', './configure', '--disable-yasm')
         os.spawnlp(os.P_WAIT, 'make', 'make', 'clean', self.target)
