@@ -28,7 +28,7 @@ class Publisher:
 
         versions['name'] = self.name
         versions['author']['name'] = 'Steve Yin'
-        versions['author']['url'] = 'https://github.com/steve3d/Dash-Docset-FFmpeg'
+        versions['author']['link'] = 'https://github.com/steve3d/Dash-Docset-FFmpeg'
         
         if len(versions['specific_versions']) == 0:
             versions['version'] = self.version
