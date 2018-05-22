@@ -42,9 +42,6 @@ class Indexer:
                 name = ident.find('Name').text
                 filePath = token.find('Path').text
 
-                if tokenType == 'cl':
-                    b = 1
-
                 if path.isfile(path.join(self.docSet, 'Contents/Resources/Documents/api', filePath)) == False:
                     print("File {} for symbol {} does not exists, skipped".format(filePath, name))
                     return
@@ -106,3 +103,4 @@ class Indexer:
         self.createDatabase()
         self.buildApi()
         self.buildGuides()
+        self.createArchive()

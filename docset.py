@@ -11,7 +11,7 @@ def build(lib, version):
     indexer.build()
 
 def publish(lib, version, dest):
-    pub = Publisher(lib, version)
+    pub = Publisher(lib, version, dest)
     pub.publish(dest)
     pass
 
